@@ -37,7 +37,7 @@ class Team(Scraper):
 
         :return: Display name, e.g. ``BORA - hansgrohe``.
         """
-        display_name_html = self.html.css_first(".page-title > .main > h1")
+        display_name_html = self.html.css_first(".page-title > .title > h1")
         return display_name_html.text().split(" (")[0]
 
     def nationality(self) -> str:
@@ -47,7 +47,7 @@ class Team(Scraper):
         :return: Team's nationality as 2 chars long country code in uppercase.
         """
         nationality_html = self.html.css_first(
-            ".page-title > .main > span.flag")
+            ".page-title > .title > span.flag")
         flag_class = nationality_html.attributes['class']
         return flag_class.split(" ")[1].upper() # type: ignore
 
