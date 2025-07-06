@@ -45,7 +45,7 @@ class Stage(Scraper):
         ...
     }
     """
-    _tables_path = ".result-cont table"
+    _tables_path = "table.results"
 
     def _set_up_html(self) -> None:
         """
