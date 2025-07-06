@@ -99,18 +99,30 @@ class Stage(Scraper):
 
     def stage_type(self) -> Literal["ITT", "TTT", "RR"]:
         """
-        Parses stage type from HTML.
+        Return stage type:
 
-        :return: Stage type, e.g. ``ITT``.
+        * ITT – individual time-trial
+        * TTT – team time-trial
+        * RR  – normal road stage
         """
-        stage_name_html = self.html.css_first(".sub > .blue")
-        stage_name2_html = self.html.css_first("div.main > h1")
-        stage_name = stage_name_html.text()
-        stage_name2 = stage_name2_html.text()
-        if "ITT" in stage_name or "ITT" in stage_name2:
-            return "ITT"
-        if "TTT" in stage_name or "TTT" in stage_name2:
+        # try several selectors, fall back gracefully
+        candidates = [
+            self.html.css_first(".sub > .blue"),
+            self.html.css_first("div.main > h1"),
+            self.html.css_first(".page-title .title h1"),
+            self.html.css_first("title"),
+        ]
+
+        text: str = ""
+        for el in candidates:
+            if el:
+                text = el.text().upper()
+                break
+
+        if "TTT" in text:
             return "TTT"
+        if "ITT" in text or "PROLOGUE" in text:
+            return "ITT"
         return "RR"
 
     def vertical_meters(self) -> Optional[int]:
